@@ -103,19 +103,6 @@ const useStyles = makeStyles((theme) => ({
   drawer: {
     backgroundColor: theme.palette.common.blue,
   },
-  drawerItem: {
-    ...theme.typography.tab,
-    color: "white",
-    opacity: 0.7,
-  },
-  drawerItemEstimate: {
-    backgroundColor: theme.palette.common.orange,
-  },
-  drawerItemSelected: {
-    "& .MuiListItemText-root": {
-      opacity: 1,
-    },
-  },
 }));
 
 export default function Header(props) {
