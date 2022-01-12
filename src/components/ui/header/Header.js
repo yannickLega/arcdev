@@ -17,9 +17,10 @@ import {
 
 import { makeStyles, useTheme } from "@material-ui/styles";
 
-import MenuIcon from "@material-ui/icons/Menu";
+import MenuIcon from "../header/MenuIcon";
+// import {Menu as MenuIcon} from "@material-ui/icons";
 
-import logo from "../../assets/logo.svg";
+import logo from "../../../assets/logo.svg";
 
 function ElevationScroll(props) {
   const { children } = props;
@@ -108,7 +109,7 @@ const useStyles = makeStyles((theme) => ({
 export default function Header(props) {
   const classes = useStyles();
   const theme = useTheme();
-  const iOS = process.browser && /iPad|iPhone|iPod/.test(navigator.userAgent);
+  // const iOS = process.browser && /iPad|iPhone|iPod/.test(navigator.userAgent);
   const matches = useMediaQuery(theme.breakpoints.down("md"));
 
   const [value, setValue] = useState(0);
@@ -212,13 +213,14 @@ export default function Header(props) {
   const drawer = (
     <>
       <SwipeableDrawer
-        disableBackdropTransition={!iOS}
-        disableDiscovery={iOS}
+        // disableBackdropTransition={!iOS}
+        // disableDiscovery={iOS}
         open={openDrawer}
         onClose={() => setOpenDrawer(false)}
         onOpen={() => setOpenDrawer(true)}
         classes={{ paper: classes.drawer }}
       >
+        du texte
         <div className={classes.toolbarMargin} />
       </SwipeableDrawer>
       <IconButton
@@ -226,6 +228,7 @@ export default function Header(props) {
         onClick={() => setOpenDrawer(!openDrawer)}
         disableRipple
       >
+        {/* <MenuIcon className={classes.drawerIcon} /> */}
         <MenuIcon className={classes.drawerIcon} />
       </IconButton>
     </>

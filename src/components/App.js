@@ -2,7 +2,7 @@ import React from "react";
 import MuiThemeProvider from "@material-ui/core/styles/MuiThemeProvider";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import theme from "../components/ui/theme";
-import Header from "../components/ui/Header";
+import Header from "../components/ui/header/Header";
 import Home from "./pages/Home";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
