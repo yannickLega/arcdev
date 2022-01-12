@@ -92,8 +92,8 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   drawerIcon: {
-    height: "50px",
-    width: "50px",
+    height: "45px",
+    width: "45px",
   },
   drawerIconContainer: {
     marginLeft: "auto",
@@ -109,6 +109,7 @@ const useStyles = makeStyles((theme) => ({
 export default function Header(props) {
   const classes = useStyles();
   const theme = useTheme();
+  //a voir plus tard
   // const iOS = process.browser && /iPad|iPhone|iPod/.test(navigator.userAgent);
   const matches = useMediaQuery(theme.breakpoints.down("md"));
 
