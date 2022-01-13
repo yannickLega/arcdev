@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
 import {
@@ -8,7 +8,6 @@ import {
   Tabs,
   Tab,
   Button,
-  Menu,
   MenuItem,
   useMediaQuery,
   SwipeableDrawer,
@@ -16,9 +15,14 @@ import {
   List,
   ListItem,
   ListItemText,
+  Grow,
+  Paper,
+  Popper,
+  MenuList,
 } from "@material-ui/core";
 
 import { makeStyles, useTheme } from "@material-ui/styles";
+import ClickAwayListener from "@material-ui/core/ClickAwayListener";
 
 import MenuIcon from "../header/MenuIcon";
 // import {Menu as MenuIcon} from "@material-ui/icons";
@@ -86,6 +90,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.common.blue,
     color: "white",
     borderRadius: "0px",
+    zIndex: 1302,
   },
   menuItem: {
     ...theme.typography.tab,
@@ -136,13 +141,12 @@ export default function Header(props) {
   // const iOS = process.browser && /iPad|iPhone|iPod/.test(navigator.userAgent);
   const matches = useMediaQuery(theme.breakpoints.down("md"));
 
-  const [value, setValue] = useState(0);
   const [openDrawer, setOpenDrawer] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const [openMenu, setOpenMenu] = useState(false);
-  const [selectedIndex, setSelectedIndex] = useState(0);
 
   const handleChange = (e, newValue) => {
+    //on met props car le state est dans App
     props.setValue(newValue);
   };
 
@@ -154,38 +158,37 @@ export default function Header(props) {
   const handleMenuItemClick = (e, i) => {
     setAnchorEl(null);
     setOpenMenu(false);
-    setSelectedIndex(i);
+    props.setSelectedIndex(i);
   };
 
   const handleClose = (e) => {
     setAnchorEl(null);
     setOpenMenu(false);
   };
-
+  const handleListKeyDown = (event) => {
+    if (event.key === "Tab") {
+      event.preventDefault();
+      setOpenMenu(false);
+    }
+  };
   const menuOptions = [
-    {
-      name: "Services",
-      link: "/services",
-      activeIndex: 1,
-      selectedIndex: 0,
-    },
     {
       name: "Custom Software Development",
       link: "/customsoftware",
       activeIndex: 1,
-      selectedIndex: 1,
+      selectedIndex: 0,
     },
     {
       name: "iOS/Android App Development",
       link: "/mobileapps",
       activeIndex: 1,
-      selectedIndex: 2,
+      selectedIndex: 1,
     },
     {
       name: "Website Development",
       link: "/websites",
       activeIndex: 1,
-      selectedIndex: 3,
+      selectedIndex: 2,
     },
   ];
 
@@ -224,10 +227,13 @@ export default function Header(props) {
     [...menuOptions, ...routes].forEach((route) => {
       switch (window.location.pathname) {
         case `${route.link}`:
-          if (value !== route.activeIndex) {
-            setValue(route.activeIndex);
-            if (route.selectedIndex && route.selectedIndex !== selectedIndex) {
-              setSelectedIndex(route.selectedIndex);
+          if (props.value !== route.activeIndex) {
+            props.setValue(route.activeIndex);
+            if (
+              route.selectedIndex &&
+              route.selectedIndex !== props.selectedIndex
+            ) {
+              props.setSelectedIndex(route.selectedIndex);
             }
           }
           break;
@@ -235,12 +241,12 @@ export default function Header(props) {
           break;
       }
     });
-  }, [value, menuOptions, routes, selectedIndex]);
+  }, [props.value, menuOptions, routes, props.selectedIndex, props]);
 
   const tabs = (
     <>
       <Tabs
-        value={value}
+        value={props.value}
         onChange={handleChange}
         className={classes.tabContainer}
         indicatorColor="primary"
@@ -255,6 +261,7 @@ export default function Header(props) {
             aria-owns={route.ariaOwns}
             aria-haspopup={route.ariaPopup}
             onMouseOver={route.mouseOver}
+            onMouseLeave={() => setOpenMenu(false)}
           />
         ))}
       </Tabs>
@@ -267,7 +274,58 @@ export default function Header(props) {
       >
         Free Estimate
       </Button>
-      <Menu
+      <Popper
+        open={openMenu}
+        anchorEl={anchorEl}
+        placement="bottom-start"
+        role={undefined}
+        transition
+        disablePortal
+      >
+        {({ TransitionProps, placement }) => (
+          <Grow
+            {...TransitionProps}
+            style={{
+              transformOrigin: placement === "top left",
+            }}
+          >
+            <Paper classes={{ root: classes.menu }} elevation={0}>
+              <ClickAwayListener onClickAway={handleClose}>
+                <MenuList
+                  autoFocusItem={false}
+                  id="simple-menu"
+                  onKeyDown={handleListKeyDown}
+                  onMouseOver={() => setOpenMenu(true)}
+                  onMouseLeave={handleClose}
+                  disablePadding
+                >
+                  {menuOptions.map((option, index) => (
+                    <MenuItem
+                      key={`${option}${index}`}
+                      component={Link}
+                      to={option.link}
+                      classes={{ root: classes.menuItem }}
+                      onClick={(event) => {
+                        handleMenuItemClick(event, index);
+                        props.setValue(1);
+                        handleClose();
+                      }}
+                      selected={
+                        index === props.selectedIndex &&
+                        props.value === 1 &&
+                        window.location.pathname !== "/services"
+                      }
+                    >
+                      {option.name}
+                    </MenuItem>
+                  ))}
+                </MenuList>
+              </ClickAwayListener>
+            </Paper>
+          </Grow>
+        )}
+      </Popper>
+      {/* <Menu
         id="simple-menu"
         anchorEl={anchorEl}
         open={openMenu}
@@ -279,24 +337,7 @@ export default function Header(props) {
         elevation={0}
         style={{ zIndex: 1302 }}
         keepMounted
-      >
-        {menuOptions.map((option, index) => (
-          <MenuItem
-            key={`${option}${index}`}
-            component={Link}
-            to={option.link}
-            classes={{ root: classes.menuItem }}
-            onClick={(event) => {
-              handleMenuItemClick(event, index);
-              setValue(1);
-              handleClose();
-            }}
-            selected={index === selectedIndex && value === 1}
-          >
-            {option.name}
-          </MenuItem>
-        ))}
-      </Menu>
+      ></Menu> */}
     </>
   );
 
@@ -317,9 +358,9 @@ export default function Header(props) {
               key={`${route}${route.activeIndex}`}
               onClick={() => {
                 setOpenDrawer(false);
-                setValue(route.activeIndex);
+                props.setValue(route.activeIndex);
               }}
-              selected={value === route.activeIndex}
+              selected={props.value === route.activeIndex}
               classes={{ selected: classes.drawerItemSelected }}
               divider
               button
@@ -338,9 +379,9 @@ export default function Header(props) {
             }}
             onClick={() => {
               setOpenDrawer(false);
-              setValue(5);
+              props.setValue(5);
             }}
-            selected={value === 5}
+            selected={props.value === 5}
             divider
             button
             component={Link}
@@ -373,7 +414,7 @@ export default function Header(props) {
               component={Link}
               to="/"
               disableRipple
-              onClick={() => setValue(0)}
+              onClick={() => props.setValue(0)}
               className={classes.logoContainer}
             >
               <img alt="company logo" className={classes.logo} src={logo} />
