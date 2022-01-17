@@ -3,7 +3,7 @@ import MuiThemeProvider from "@material-ui/core/styles/MuiThemeProvider";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import theme from "../components/ui/theme";
 import Header from "../components/ui/header/Header";
-import Home from "./pages/Home";
+import LandingPage from "./pages/LandingPage";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
 import Customsoftware from "./pages/Customsoftware";
@@ -17,7 +17,7 @@ import Footer from "./ui/Footer";
 function App() {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [value, setValue] = useState(0);
-  
+
   return (
     <MuiThemeProvider theme={theme}>
       <BrowserRouter>
@@ -28,7 +28,7 @@ function App() {
           setSelectedIndex={setSelectedIndex}
         />
         <Routes>
-          <Route exact path="/" element={<Home />} />
+          <Route exact path="/" element={<LandingPage />} />
           <Route exact path="/services" element={<Services />} />
           <Route exact path="/customsoftware" element={<Customsoftware />} />
           <Route exact path="/mobileapps" element={<MobileApps />} />

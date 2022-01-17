@@ -102,6 +102,7 @@ const useStyles = makeStyles((theme) => ({
   drawerIcon: {
     height: "50px",
     width: "50px",
+    color: "white",
   },
   drawerIconContainer: {
     marginLeft: "auto",
@@ -292,7 +293,7 @@ export default function Header(props) {
             <Paper classes={{ root: classes.menu }} elevation={0}>
               <ClickAwayListener onClickAway={handleClose}>
                 <MenuList
-                  autoFocusItem={false}
+                  autofocusitem="false"
                   id="simple-menu"
                   onKeyDown={handleListKeyDown}
                   onMouseOver={() => setOpenMenu(true)}
@@ -399,7 +400,6 @@ export default function Header(props) {
         onClick={() => setOpenDrawer(!openDrawer)}
         disableRipple
       >
-        {/* <MenuIcon className={classes.drawerIcon} /> */}
         <MenuIcon className={classes.drawerIcon} />
       </IconButton>
     </>
