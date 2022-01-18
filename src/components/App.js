@@ -6,7 +6,7 @@ import Header from "../components/ui/header/Header";
 import LandingPage from "./pages/LandingPage";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
-import Customsoftware from "./pages/Customsoftware";
+import CustomSoftware from "./pages/CustomSoftware";
 import Estimate from "./pages/Estimate";
 import MobileApps from "./pages/MobileApps";
 import Revolution from "./pages/Revolution";
@@ -42,13 +42,58 @@ function App() {
               <Services setValue={setValue} selectedIndex={selectedIndex} />
             }
           />
-          <Route exact path="/customsoftware" element={<Customsoftware />} />
-          <Route exact path="/mobileapps" element={<MobileApps />} />
-          <Route exact path="/websites" element={<Websites />} />
-          <Route exact path="/revolution" element={<Revolution />} />
-          <Route exact path="/about" element={<About />} />
-          <Route exact path="/contact" element={<Contact />} />
-          <Route exact path="/estimate" element={<Estimate />} />
+          <Route
+            exact
+            path="/customsoftware"
+            element={
+              <CustomSoftware
+                setValue={setValue}
+                selectedIndex={selectedIndex}
+              />
+            }
+          />
+          <Route
+            exact
+            path="/mobileapps"
+            element={
+              <MobileApps setValue={setValue} selectedIndex={selectedIndex} />
+            }
+          />
+          <Route
+            exact
+            path="/websites"
+            element={<Websites />}
+            setValue={setValue}
+            selectedIndex={selectedIndex}
+          />
+          <Route
+            exact
+            path="/revolution"
+            element={
+              <Revolution setValue={setValue} selectedIndex={selectedIndex} />
+            }
+          />
+          <Route
+            exact
+            path="/about"
+            element={<About />}
+            setValue={setValue}
+            selectedIndex={selectedIndex}
+          />
+          <Route
+            exact
+            path="/contact"
+            element={
+              <Contact setValue={setValue} selectedIndex={selectedIndex} />
+            }
+          />
+          <Route
+            exact
+            path="/estimate"
+            element={
+              <Estimate setValue={setValue} selectedIndex={selectedIndex} />
+            }
+          />
         </Routes>
         <Footer setValue={setValue} setSelectedIndex={setSelectedIndex} />
       </BrowserRouter>
