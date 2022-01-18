@@ -28,7 +28,13 @@ function App() {
           setSelectedIndex={setSelectedIndex}
         />
         <Routes>
-          <Route exact path="/" element={<LandingPage />} />
+          <Route
+            exact
+            path="/"
+            element={
+              <LandingPage setValue={setValue} selectedIndex={selectedIndex} />
+            }
+          />
           <Route exact path="/services" element={<Services />} />
           <Route exact path="/customsoftware" element={<Customsoftware />} />
           <Route exact path="/mobileapps" element={<MobileApps />} />
@@ -38,12 +44,7 @@ function App() {
           <Route exact path="/contact" element={<Contact />} />
           <Route exact path="/estimate" element={<Estimate />} />
         </Routes>
-        <Footer
-          value={value}
-          setValue={setValue}
-          selectedIndex={selectedIndex}
-          setSelectedIndex={setSelectedIndex}
-        />
+        <Footer setValue={setValue} setSelectedIndex={setSelectedIndex} />
       </BrowserRouter>
     </MuiThemeProvider>
   );

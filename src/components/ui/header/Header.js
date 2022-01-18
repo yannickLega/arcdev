@@ -75,6 +75,11 @@ const useStyles = makeStyles((theme) => ({
     ...theme.typography.tab,
     minWidth: 10,
     marginLeft: "25px",
+    opacity: 0.7,
+    "&:hover": {
+      opacity: 1,
+      color: "white",
+    },
   },
   button: {
     ...theme.typography.estimate,
@@ -88,7 +93,6 @@ const useStyles = makeStyles((theme) => ({
   },
   menu: {
     backgroundColor: theme.palette.common.blue,
-    color: "white",
     borderRadius: "0px",
     zIndex: 1302,
   },
@@ -97,6 +101,7 @@ const useStyles = makeStyles((theme) => ({
     opacity: 0.7,
     "&:hover": {
       opacity: 1,
+      color: "white",
     },
   },
   drawerIcon: {
@@ -120,15 +125,14 @@ const useStyles = makeStyles((theme) => ({
     opacity: 0.7,
     "&:hover": {
       opacity: 1,
+      color: "white",
     },
   },
   drawerItemSelected: {
     "& .MuiListItemText-root": {
       opacity: 1,
+      color: "white",
     },
-  },
-  drawerItemEstimate: {
-    backgroundColor: theme.palette.common.orange,
   },
   appbar: {
     //met un z-index de 1 sur modal component
@@ -166,12 +170,14 @@ export default function Header(props) {
     setAnchorEl(null);
     setOpenMenu(false);
   };
+
   const handleListKeyDown = (event) => {
     if (event.key === "Tab") {
       event.preventDefault();
       setOpenMenu(false);
     }
   };
+
   const menuOptions = [
     {
       name: "Custom Software Development",
@@ -222,6 +228,11 @@ export default function Header(props) {
       link: "/contact",
       activeIndex: 4,
     },
+    {
+      name: "Free Estimate",
+      link: "/estimate",
+      activeIndex: 5,
+    },
   ];
 
   useEffect(() => {
@@ -266,15 +277,6 @@ export default function Header(props) {
           />
         ))}
       </Tabs>
-      <Button
-        component={Link}
-        to="/estimate"
-        variant="contained"
-        color="secondary"
-        className={classes.button}
-      >
-        Free Estimate
-      </Button>
       <Popper
         open={openMenu}
         anchorEl={anchorEl}
@@ -326,19 +328,6 @@ export default function Header(props) {
           </Grow>
         )}
       </Popper>
-      {/* <Menu
-        id="simple-menu"
-        anchorEl={anchorEl}
-        open={openMenu}
-        onClose={handleClose}
-        classes={{ paper: classes.menu }}
-        MenuListProps={{
-          onMouseLeave: handleClose,
-        }}
-        elevation={0}
-        style={{ zIndex: 1302 }}
-        keepMounted
-      ></Menu> */}
     </>
   );
 
@@ -373,25 +362,6 @@ export default function Header(props) {
               </ListItemText>
             </ListItem>
           ))}
-          <ListItem
-            classes={{
-              root: classes.drawerItemEstimate,
-              selected: classes.drawerItemSelected,
-            }}
-            onClick={() => {
-              setOpenDrawer(false);
-              props.setValue(5);
-            }}
-            selected={props.value === 5}
-            divider
-            button
-            component={Link}
-            to="/estimate"
-          >
-            <ListItemText className={classes.drawerItem} disableTypography>
-              Free Estimate
-            </ListItemText>
-          </ListItem>
         </List>
         <div className={classes.toolbarMargin} />
       </SwipeableDrawer>

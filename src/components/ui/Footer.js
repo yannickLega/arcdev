@@ -90,7 +90,6 @@ export default function Footer(props) {
                 component={Link}
                 onClick={() => {
                   props.setValue(1);
-                  props.setSelectedIndex(0);
                 }}
                 to="/services"
                 className={classes.link}
@@ -102,7 +101,7 @@ export default function Footer(props) {
                 component={Link}
                 onClick={() => {
                   props.setValue(1);
-                  props.setSelectedIndex(1);
+                  props.setSelectedIndex(0);
                 }}
                 to="/customSoftware"
                 className={classes.link}
@@ -114,7 +113,7 @@ export default function Footer(props) {
                 component={Link}
                 onClick={() => {
                   props.setValue(1);
-                  props.setSelectedIndex(2);
+                  props.setSelectedIndex(1);
                 }}
                 to="/mobileApps"
                 className={classes.link}
@@ -126,7 +125,7 @@ export default function Footer(props) {
                 component={Link}
                 onClick={() => {
                   props.setValue(1);
-                  props.setSelectedIndex(3);
+                  props.setSelectedIndex(2);
                 }}
                 to="/websites"
                 className={classes.link}
