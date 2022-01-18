@@ -35,7 +35,13 @@ function App() {
               <LandingPage setValue={setValue} selectedIndex={selectedIndex} />
             }
           />
-          <Route exact path="/services" element={<Services />} />
+          <Route
+            exact
+            path="/services"
+            element={
+              <Services setValue={setValue} selectedIndex={selectedIndex} />
+            }
+          />
           <Route exact path="/customsoftware" element={<Customsoftware />} />
           <Route exact path="/mobileapps" element={<MobileApps />} />
           <Route exact path="/websites" element={<Websites />} />

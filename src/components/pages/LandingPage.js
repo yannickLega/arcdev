@@ -236,6 +236,7 @@ export default function LandingPage(props) {
           </Grid>
           <Grid item>
             <img
+              width="250em"
               className={classes.icon}
               alt="custom software icon"
               src={customSoftwareIcon}
@@ -282,7 +283,7 @@ export default function LandingPage(props) {
           </Grid>
           <Grid item style={{ marginRight: matchesSM ? 0 : "5em" }}>
             <img
-              width={250}
+              width="250em"
               className={classes.icon}
               alt="mobile phone icon"
               src={mobileAppsIcon}
@@ -329,6 +330,7 @@ export default function LandingPage(props) {
           </Grid>
           <Grid item>
             <img
+              width="250em"
               className={classes.icon}
               alt="websites icon"
               src={websitesIcon}
@@ -404,7 +406,11 @@ export default function LandingPage(props) {
               sm
               style={{ marginLeft: matchesXS ? 0 : matchesSM ? "2em" : "5em" }}
             >
-              <Grid container direction="column" style={{marginBottom: matchesXS ? "10em" : 0}} >
+              <Grid
+                container
+                direction="column"
+                style={{ marginBottom: matchesXS ? "10em" : 0 }}
+              >
                 <Typography variant="h2" style={{ color: "white" }}>
                   About Us
                 </Typography>
