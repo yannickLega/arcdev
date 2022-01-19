@@ -53,7 +53,7 @@ export default function CustomSoftware(props) {
   //option de Lottie animation1
   const documentsOptions = {
     loop: true,
-    autoplay: false,
+    autoplay: true,
     animationData: documentsAnimation,
     rendererSettings: {
       preserveAspectRatio: "xMidYMid slice",
@@ -62,7 +62,7 @@ export default function CustomSoftware(props) {
   //option de Lottie animation2
   const scaleOptions = {
     loop: true,
-    autoplay: false,
+    autoplay: true,
     animationData: scaleAnimation,
     rendererSettings: {
       preserveAspectRatio: "xMidYMid slice",
@@ -71,7 +71,7 @@ export default function CustomSoftware(props) {
   //option de Lottie animation3
   const automationOptions = {
     loop: true,
-    autoplay: false,
+    autoplay: true,
     animationData: automationAnimation,
     rendererSettings: {
       preserveAspectRatio: "xMidYMid slice",
@@ -80,7 +80,7 @@ export default function CustomSoftware(props) {
   //option de Lottie animation4
   const uxOptions = {
     loop: true,
-    autoplay: false,
+    autoplay: true,
     animationData: uxAnimation,
     rendererSettings: {
       preserveAspectRatio: "xMidYMid slice",
