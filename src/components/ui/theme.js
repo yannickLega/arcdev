@@ -56,21 +56,25 @@ export default createMuiTheme({
       color: arcBlue,
     },
     subtitle1: {
+      fontFamily: "Roboto",
       fontSize: "1.25rem",
       fontWeight: 300,
       color: arcGrey,
     },
     subtitle2: {
+      fontFamily: "Roboto",
       color: "white",
       fontWeight: 300,
       fontSize: "1.25rem",
     },
     body1: {
+      fontFamily: "Roboto",
       fontSize: "1.25rem",
       color: arcGrey,
       fontWeight: 300,
     },
     caption: {
+      fontFamily: "Roboto",
       fontSize: "1rem",
       fontWeight: 300,
       color: arcGrey,
