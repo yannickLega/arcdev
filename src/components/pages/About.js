@@ -49,7 +49,6 @@ export default function About(props) {
   const classes = useStyles();
   const theme = useTheme();
   const matchesMD = useMediaQuery(theme.breakpoints.down("md"));
-  const matchesSM = useMediaQuery(theme.breakpoints.down("sm"));
 
   return (
     <Grid container direction="column">
@@ -265,7 +264,7 @@ export default function About(props) {
         </Grid>
       </Grid>
       <Grid item>
-        <CallToAction setValue={props.setValue}/>
+        <CallToAction setValue={props.setValue} />
       </Grid>
     </Grid>
   );

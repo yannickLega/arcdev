@@ -89,4 +89,23 @@ export default createMuiTheme({
       fontWeight: "bold",
     },
   },
+  overrides: {
+    MuiInputLabel: {
+      root: {
+        color: arcBlue,
+        fontSize: "1rem",
+      },
+    },
+    MuiInput: {
+      underline: {
+        "&:before": {
+          //backtics car il y a plusieurs valeurs a modifier
+          borderBottom: `2px solid ${arcBlue}`,
+        },
+        "&:hover:not($disabled):not($focused):not($error):before": {
+          borderBottom: `2px solid ${arcBlue}`,
+        },
+      },
+    },
+  },
 });
