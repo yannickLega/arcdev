@@ -13,6 +13,7 @@ import {
 } from "@material-ui/core";
 
 import background from "../../assets/background.jpg";
+import mobileBackground from "../../assets/mobileBackground.jpg";
 import phoneIcon from "../../assets/phone.svg";
 import emailIcon from "../../assets/email.svg";
 import airplane from "../../assets/send.svg";
@@ -25,13 +26,16 @@ const useStyles = makeStyles((theme) => ({
     backgroundRepeat: "no-repeat",
     height: "60em",
     paddingBottom: "10em",
+    [theme.breakpoints.down("md")]: {
+      backgroundImage: `url(${mobileBackground})`,
+    },
   },
   learnButton: {
     ...theme.typography.learnButton,
     fontSize: "0.7rem",
     height: 35,
     padding: 5,
-    [theme.breakpoints.down("sm")]: {
+    [theme.breakpoints.down("md")]: {
       marginBottom: "2em",
     },
   },
@@ -47,7 +51,7 @@ const useStyles = makeStyles((theme) => ({
     "&:hover": {
       backgroundColor: theme.palette.secondary.light,
     },
-    [theme.breakpoints.down("sm")]: {
+    [theme.breakpoints.down("md")]: {
       marginRight: 0,
       marginLeft: 0,
     },
@@ -72,12 +76,52 @@ const useStyles = makeStyles((theme) => ({
 export default function Contact(props) {
   const classes = useStyles();
   const theme = useTheme();
+  const matchesMD = useMediaQuery(theme.breakpoints.down("md"));
   const matchesSM = useMediaQuery(theme.breakpoints.down("sm"));
 
   const [name, setName] = useState("");
+
   const [email, setEmail] = useState("");
+  const [emailHelper, setEmailHelper] = useState("");
+
   const [phone, setPhone] = useState("");
+  const [phoneHelper, setPhoneHelper] = useState("");
+
   const [message, setMessage] = useState("");
+
+  //gestion des erreurs
+  const onChange = (event) => {
+    let valid;
+
+    switch (event.target.id) {
+      case "email":
+        setEmail(event.target.value);
+        valid = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(
+          event.target.value
+        );
+
+        if (!valid) {
+          setEmailHelper("Invalid Email ex: pierre.paul@jacques.fr");
+        } else {
+          setEmailHelper("");
+        }
+        break;
+      case "phone":
+        setPhone(event.target.value);
+        valid = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/.test(
+          event.target.value
+        );
+
+        if (!valid) {
+          setPhoneHelper("Invalid Phone Number ex: 0612345678");
+        } else {
+          setPhoneHelper("");
+        }
+        break;
+      default:
+        break;
+    }
+  };
 
   return (
     <Grid container>
@@ -87,16 +131,25 @@ export default function Contact(props) {
         direction="column"
         lg={4}
         xl={3}
+        style={{
+          marginBottom: matchesMD ? "5em" : undefined,
+          marginTop: matchesSM ? "1em" : matchesMD ? "5em" : 0,
+        }}
         justify="center"
         alignItems="center"
       >
         <Grid item>
           <Grid container direction="column">
             <Grid item>
-              <Typography variant="h2" style={{ lineHeight: 1 }}>
+              <Typography
+                align={matchesMD ? "center" : undefined}
+                variant="h2"
+                style={{ lineHeight: 1 }}
+              >
                 Contact Us
               </Typography>
               <Typography
+                align={matchesMD ? "center" : undefined}
                 variant="body1"
                 style={{ color: theme.palette.common.blue }}
               >
@@ -116,7 +169,13 @@ export default function Contact(props) {
                   variant="body1"
                   style={{ color: theme.palette.common.blue, fontSize: "1rem" }}
                 >
-                  06 12 34 56 78
+                  <a
+                    // permet d'appeller le numero sur mobile
+                    href="tel:0612345678"
+                    style={{ textDecoration: "none", color: "inherit" }}
+                  >
+                    06 12 34 56 78
+                  </a>
                 </Typography>
               </Grid>
             </Grid>
@@ -133,33 +192,51 @@ export default function Contact(props) {
                   variant="body1"
                   style={{ color: theme.palette.common.blue, fontSize: "1rem" }}
                 >
-                  votre.email@operateur.com
+                  <a
+                    // permet d'ouvrir le gestionnaire de mail sur mobile ou ordi
+                    href="mailto:yannick.lega@yahoo.com"
+                    style={{ textDecoration: "none", color: "inherit" }}
+                  >
+                    yannick.lega@yahoo.com
+                  </a>
                 </Typography>
               </Grid>
             </Grid>
-            <Grid item container style={{ maxWidth: "20em" }}>
-              <Grid item>
+            <Grid
+              item
+              container
+              direction="column"
+              style={{ maxWidth: "20em" }}
+            >
+              <Grid item style={{ marginBottom: "0.5em" }}>
                 <TextField
                   label="Name"
                   id="name"
                   value={name}
                   onChange={(event) => setName(event.target.value)}
+                  fullWidth
                 />
               </Grid>
-              <Grid item>
+              <Grid item style={{ marginBottom: "0.5em" }}>
                 <TextField
                   label="Email"
                   id="email"
                   value={email}
-                  onChange={(event) => setEmail(event.target.value)}
+                  onChange={onChange}
+                  error={emailHelper.length !== 0}
+                  helperText={emailHelper}
+                  fullWidth
                 />
               </Grid>
-              <Grid item>
+              <Grid item style={{ marginBottom: "0.5em" }}>
                 <TextField
                   label="Phone"
                   id="phone"
                   value={phone}
-                  onChange={(event) => setPhone(event.target.value)}
+                  onChange={onChange}
+                  error={phoneHelper.length !== 0}
+                  helperText={phoneHelper}
+                  fullWidth
                 />
               </Grid>
             </Grid>
@@ -173,10 +250,22 @@ export default function Contact(props) {
                 rows={10}
                 className={classes.message}
                 InputProps={{ disableUnderline: true }}
+                fullWidth
               />
             </Grid>
-            <Grid item container justify="center" style={{marginTop:"2em"}} >
-              <Button variant="contained" className={classes.sendButton}>
+            <Grid item container justify="center" style={{ marginTop: "2em" }}>
+              <Button
+                disabled={
+                  name.length === 0 ||
+                  message.length === 0 ||
+                  emailHelper.length !== 0 ||
+                  email.length === 0 ||
+                  phoneHelper.length !== 0 ||
+                  phone.length === 0
+                }
+                variant="contained"
+                className={classes.sendButton}
+              >
                 Send Message
                 <img
                   src={airplane}
@@ -191,27 +280,33 @@ export default function Contact(props) {
       <Grid
         item
         container
+        direction={matchesMD ? "column" : "row"}
         className={classes.background}
         lg={8}
         xl={9}
         alignItems="center"
+        justify={matchesMD ? "center" : undefined}
       >
         <Grid
           item
           style={{
-            marginLeft: matchesSM ? 0 : "3em",
-            textAlign: matchesSM ? "center" : "inherit",
+            marginLeft: matchesMD ? 0 : "3em",
+            textAlign: matchesMD ? "center" : "inherit",
           }}
         >
           <Grid container direction="column">
             <Grid item>
-              <Typography variant="h2">
+              <Typography align={matchesMD ? "center" : undefined} variant="h2">
                 Simple Software <br /> Revolutionary Results
               </Typography>
-              <Typography variant="subtitle2" style={{ fontSize: "1.5rem" }}>
+              <Typography
+                align={matchesMD ? "center" : undefined}
+                variant="subtitle2"
+                style={{ fontSize: "1.5rem" }}
+              >
                 Take advantage of the 21st Century
               </Typography>
-              <Grid container item direction={matchesSM ? "column" : undefined}>
+              <Grid container item direction={matchesMD ? "column" : undefined}>
                 <Button
                   variant="outlined"
                   className={classes.learnButton}

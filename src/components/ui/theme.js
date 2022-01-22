@@ -97,6 +97,10 @@ export default createMuiTheme({
       },
     },
     MuiInput: {
+      root: {
+        color: arcGrey,
+        fontWeight: 300,
+      },
       underline: {
         "&:before": {
           //backtics car il y a plusieurs valeurs a modifier
