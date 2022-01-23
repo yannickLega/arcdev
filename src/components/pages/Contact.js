@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import axios from "axios";
 import { Link } from "react-router-dom";
 import ButtonArrow from "../ui/ButtonArrow";
 
@@ -130,6 +131,14 @@ export default function Contact(props) {
       default:
         break;
     }
+  };
+
+  //axios confirm func pour envoyer message
+  const onConfirm = () => {
+    axios
+      .get('https://us-central1-arcdev-dd519.cloudfunctions.net/sendMail')
+      .then((res) => console.log(res))
+      .catch((err) => console.log(err));
   };
 
   return (
@@ -343,7 +352,7 @@ export default function Contact(props) {
               />
             </Grid>
           </Grid>
-          <Grid item style={{ maxWidth: matchesXS ? "100vw": "20em" }}>
+          <Grid item style={{ maxWidth: matchesXS ? "100vw" : "20em" }}>
             <TextField
               placeholder="your message"
               id="message"
@@ -384,7 +393,7 @@ export default function Contact(props) {
                 }
                 variant="contained"
                 className={classes.sendButton}
-                onClick={() => setOpen(true)}
+                onClick={onConfirm}
               >
                 Send Message
                 <img
