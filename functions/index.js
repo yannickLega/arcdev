@@ -11,7 +11,8 @@ const transporter = nodemailer.createTransport({
   auth: { user: config.user.email, pass: config.user.password },
 });
 
-const mailOptions = {
+// eslint-disable-next-line prefer-const
+let mailOptions = {
   from: "Arc Development",
   to: "yannick.lega@yahoo.com",
   subject: "testing nodemailer",
