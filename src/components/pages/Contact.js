@@ -13,6 +13,8 @@ import {
   useMediaQuery,
   Dialog,
   DialogContent,
+  CircularProgress,
+  Snackbar,
 } from "@material-ui/core";
 
 import background from "../../assets/background.jpg";
@@ -99,6 +101,16 @@ export default function Contact(props) {
 
   const [open, setOpen] = useState(false);
 
+  //spinner state
+  const [loading, setLoading] = useState(false);
+
+  //snackbar state
+  const [alert, setAlert] = useState({
+    open: false,
+    message: "",
+    backgroundColor: "",
+  });
+
   //gestion des erreurs
   const onChange = (event) => {
     let valid;
@@ -135,11 +147,45 @@ export default function Contact(props) {
 
   //axios confirm func pour envoyer message
   const onConfirm = () => {
+    setLoading(true);
     axios
-      .get('https://us-central1-arcdev-dd519.cloudfunctions.net/sendMail')
-      .then((res) => console.log(res))
-      .catch((err) => console.log(err));
+      .get("https://us-central1-arcdev-dd519.cloudfunctions.net/sendMail", {
+        params: {
+          name: name,
+          email: email,
+          phone: phone,
+          message: message,
+        },
+      })
+      .then((res) => {
+        setLoading(false);
+        setOpen(false);
+        setName("");
+        setEmail("");
+        setPhone("");
+        setMessage("");
+        setAlert({
+          open: true,
+          message: "Message sent successfully",
+          backgroundColor: "#4bb543",
+        });
+      })
+      .catch((err) => {
+        setLoading(false);
+        setAlert({
+          open: true,
+          message: "Oups, something went wrong, please try again ! ",
+          backgroundColor: "#ff3232",
+        });
+      });
   };
+
+  const buttonContents = (
+    <>
+      Send Message
+      <img src={airplane} alt="paper airplane" style={{ marginLeft: "1em" }} />
+    </>
+  );
 
   return (
     <Grid container>
@@ -285,12 +331,7 @@ export default function Contact(props) {
                 className={classes.sendButton}
                 onClick={() => setOpen(true)}
               >
-                Send Message
-                <img
-                  src={airplane}
-                  alt="paper airplane"
-                  style={{ marginLeft: "1em" }}
-                />
+                {buttonContents}
               </Button>
             </Grid>
           </Grid>
@@ -395,17 +436,20 @@ export default function Contact(props) {
                 className={classes.sendButton}
                 onClick={onConfirm}
               >
-                Send Message
-                <img
-                  src={airplane}
-                  alt="paper airplane"
-                  style={{ marginLeft: "1em" }}
-                />
+                {loading ? <CircularProgress size={30} /> : buttonContents}
               </Button>
             </Grid>
           </Grid>
         </DialogContent>
       </Dialog>
+      <Snackbar
+        open={alert.open}
+        message={alert.message}
+        ContentProps={{ style: { backgroundColor: alert.backgroundColor } }}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        onClose={() => setAlert({ ...alert, open: false })}
+        autoHideDuration={4000}
+      />
       <Grid
         item
         container
