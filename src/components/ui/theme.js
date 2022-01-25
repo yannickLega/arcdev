@@ -54,6 +54,7 @@ export default createMuiTheme({
       fontWeight: 500,
       fontFamily: "Lato",
       color: arcBlue,
+      lineHeight: 1,
     },
     subtitle1: {
       fontFamily: "Roboto",
@@ -103,7 +104,7 @@ export default createMuiTheme({
       },
       underline: {
         "&:before": {
-          //backtics car il y a plusieurs valeurs a modifier
+          //backtics car il y a plusieurs valeurs a modifier + injection de couleur
           borderBottom: `2px solid ${arcBlue}`,
         },
         "&:hover:not($disabled):not($focused):not($error):before": {

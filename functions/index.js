@@ -22,7 +22,7 @@ exports.sendMail = functions.https.onRequest((request, response) => {
     const { name, email, phone, message } = request.query;
 
     mailOptions = {
-      from: "Arc Development",
+      from: "Arc Development <firebase.testing666@gmail.com>",
       to: "firebase.testing666@gmail.com",
       subject: "Message received",
       html: `
@@ -41,7 +41,7 @@ exports.sendMail = functions.https.onRequest((request, response) => {
       }
     });
     mailOptions = {
-      from: "Arc Development",
+      from: "Arc Development <firebase.testing666@gmail.com>",
       to: email,
       subject: "We have received your message !",
       html: `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
