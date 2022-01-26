@@ -4,7 +4,15 @@ import Lottie from "react-lottie";
 
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 
-import { Grid, Typography, Button, IconButton } from "@material-ui/core";
+import {
+  Grid,
+  Typography,
+  Button,
+  IconButton,
+  Dialog,
+  DialogContent,
+  TextField,
+} from "@material-ui/core";
 
 import check from "../../assets/check.svg";
 import send from "../../assets/send.svg";
@@ -49,6 +57,11 @@ const useStyles = makeStyles((theme) => ({
     "&:hover": {
       backgroundColor: theme.palette.secondary.light,
     },
+  },
+  message: {
+    border: `2px solid ${theme.palette.common.blue}`,
+    marginTop: "5em",
+    borderRadius: 5,
   },
 }));
 
@@ -311,7 +324,18 @@ export default function Estimate(props) {
   const classes = useStyles();
   const theme = useTheme();
 
-  const [questions, setQuestions] = useState(softwareQuestions);
+  const [questions, setQuestions] = useState(defaultQuestions);
+  const [dialogOpen, setDialogOpen] = useState(false);
+
+  const [name, setName] = useState("");
+
+  const [email, setEmail] = useState("");
+  const [emailHelper, setEmailHelper] = useState("");
+
+  const [phone, setPhone] = useState("");
+  const [phoneHelper, setPhoneHelper] = useState("");
+
+  const [message, setMessage] = useState("");
 
   //option de Lottie
   const defaultOptions = {
@@ -328,7 +352,7 @@ export default function Estimate(props) {
     const newQuestions = cloneDeep(questions);
     //verifie quelle question est active
     const currentlyActive = newQuestions.filter((question) => question.active);
-    //recupere l'index de la question active
+    //recupere l'index de la question active...on met -1 car l'index = 0 quand id = 1
     const activeIndex = currentlyActive[0].id - 1;
     //recupere l'objet associé a la question
     const nextIndex = activeIndex + 1;
@@ -372,6 +396,82 @@ export default function Estimate(props) {
     }
   };
 
+  const handleSelect = (id) => {
+    const newQuestions = cloneDeep(questions);
+    const currentlyActive = newQuestions.filter((question) => question.active);
+    const activeIndex = currentlyActive[0].id - 1;
+
+    const newSelected = newQuestions[activeIndex].options[id - 1];
+    //fait un array avec les options selected
+    const previousSelected = currentlyActive[0].options.filter(
+      (option) => option.selected
+    );
+
+    //switch permettant de select une option ou plusieurs suivant le cas
+    switch (currentlyActive[0].subtitle) {
+      case "Select one.":
+        if (previousSelected[0]) {
+          //toggle
+          previousSelected[0].selected = !previousSelected[0].selected;
+        }
+        //toggle index... if true toggle to false et inversement
+        newSelected.selected = !newSelected.selected;
+        break;
+      default:
+        newSelected.selected = !newSelected.selected;
+        break;
+    }
+    //switch permettant a la premiere question de choisir le bon set de questions suivant le choix
+    switch (newSelected.title) {
+      case "Custom Software Development":
+        setQuestions(softwareQuestions);
+        break;
+      case "iOS/Android App Development":
+        setQuestions(softwareQuestions);
+        break;
+      case "Website Development":
+        setQuestions(websiteQuestions);
+        break;
+      default:
+        setQuestions(newQuestions);
+        break;
+    }
+  };
+
+  //gestion des erreurs
+  const onChange = (event) => {
+    let valid;
+
+    switch (event.target.id) {
+      case "email":
+        setEmail(event.target.value);
+        valid = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(
+          event.target.value
+        );
+
+        if (!valid) {
+          setEmailHelper("Invalid Email ex: pierre.paul@jacques.fr");
+        } else {
+          setEmailHelper("");
+        }
+        break;
+      case "phone":
+        setPhone(event.target.value);
+        valid = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/.test(
+          event.target.value
+        );
+
+        if (!valid) {
+          setPhoneHelper("Invalid Phone Number ex: 0612345678");
+        } else {
+          setPhoneHelper("");
+        }
+        break;
+      default:
+        break;
+    }
+  };
+
   return (
     <Grid container>
       <Grid item container direction="column" lg>
@@ -405,6 +505,7 @@ export default function Estimate(props) {
                     fontWeight: 500,
                     fontSize: "2.25em",
                     marginTop: "5em",
+                    lineHeight: 1.25,
                   }}
                 >
                   {question.title}
@@ -420,8 +521,25 @@ export default function Estimate(props) {
               </Grid>
               <Grid item container>
                 {question.options.map((option) => (
-                  <Grid item container direction="column" md key={option.id}>
-                    <Grid item style={{ maxWidth: "12em" }}>
+                  <Grid
+                    item
+                    container
+                    direction="column"
+                    key={option.id}
+                    component={Button}
+                    onClick={() => handleSelect(option.id)}
+                    style={{
+                      display: "grid",
+                      textTransform: "none",
+                      borderRadius: 0,
+                      backgroundColor: option.selected
+                        ? theme.palette.common.orange
+                        : null,
+                      margin: "0.5em",
+                    }}
+                    md
+                  >
+                    <Grid item style={{ maxWidth: "14em" }}>
                       <Typography
                         variant="h6"
                         align="center"
@@ -480,11 +598,82 @@ export default function Estimate(props) {
           </Grid>
         </Grid>
         <Grid item>
-          <Button variant="contained" className={classes.estimateButton}>
+          <Button
+            variant="contained"
+            className={classes.estimateButton}
+            onClick={() => setDialogOpen(true)}
+          >
             Get Estimate
           </Button>
         </Grid>
       </Grid>
+      <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}>
+        <Grid container justify="center">
+          <Typography variant="h2" align="center">
+            Estimate
+          </Typography>
+        </Grid>
+        <DialogContent>
+          <Grid container>
+            <Grid item container direction="column">
+              <Grid item style={{ marginBottom: "0.5em" }}>
+                <TextField
+                  label="Name"
+                  id="name"
+                  value={name}
+                  onChange={(event) => setName(event.target.value)}
+                  fullWidth
+                />
+              </Grid>
+              <Grid item style={{ marginBottom: "0.5em" }}>
+                <TextField
+                  label="Email"
+                  id="email"
+                  value={email}
+                  onChange={onChange}
+                  error={emailHelper.length !== 0}
+                  helperText={emailHelper}
+                  fullWidth
+                />
+              </Grid>
+              <Grid item style={{ marginBottom: "0.5em" }}>
+                <TextField
+                  label="Phone"
+                  id="phone"
+                  value={phone}
+                  onChange={onChange}
+                  error={phoneHelper.length !== 0}
+                  helperText={phoneHelper}
+                  fullWidth
+                />
+              </Grid>
+              <Grid item style={{ maxWidth: "20em" }}>
+                <TextField
+                  placeholder="your message"
+                  id="message"
+                  value={message}
+                  onChange={(event) => setMessage(event.target.value)}
+                  multiline
+                  rows={10}
+                  className={classes.message}
+                  InputProps={{ disableUnderline: true }}
+                  fullWidth
+                />
+              </Grid>
+              <Grid item>
+                <Typography variant="body1" paragraph>
+                  We can create this digital solution for an estimated ...
+                </Typography>
+                <Typography variant="body1" paragraph>
+                  Fill out your name, phone, and email, place your request, and
+                  we'll get back to you with details moving forward and a final
+                  price.
+                </Typography>
+              </Grid>
+            </Grid>
+          </Grid>
+        </DialogContent>
+      </Dialog>
     </Grid>
   );
 }
