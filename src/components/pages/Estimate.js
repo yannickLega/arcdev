@@ -63,6 +63,12 @@ const useStyles = makeStyles((theme) => ({
     marginTop: "5em",
     borderRadius: 5,
   },
+  specialText: {
+    fontFamily: "Roboto",
+    fontWeight: 700,
+    fontSize: "1.5rem",
+    color: theme.palette.common.orange,
+  },
 }));
 
 const defaultQuestions = [
@@ -337,6 +343,8 @@ export default function Estimate(props) {
 
   const [message, setMessage] = useState("");
 
+  const [total, setTotal] = useState(0);
+
   //option de Lottie
   const defaultOptions = {
     loop: true,
@@ -472,6 +480,34 @@ export default function Estimate(props) {
     }
   };
 
+  const getTotal = () => {
+    let cost = 0;
+    //map toute les questions et filter option.selected de chaque option pour recuperer chaque option.selected = true dans un array
+    const selections = questions
+      .map((question) => question.options.filter((option) => option.selected))
+      //filter le resultat avec une longueur superieure a 0 car le premier n'a pas de selection et donc egal a 0
+      .filter((question) => question.length > 0);
+
+    //map dans chaque niveau d'array pour recuperer le cost de chaques options selectionnées et incrementer pour avoir le total
+    selections.map((options) => options.map((option) => (cost += option.cost)));
+
+    // filter pour rechercher la derniere question qui est un multiplier suivant le nombre de users selectionne et qui n'apparait que dans une certaine serie de questions d'ou la longueur de question superieure a 2 dans le if
+    if (questions.length > 2) {
+      const userCost = questions
+        .filter(
+          (question) => question.title === "How many users do you expect?"
+        )
+        .map((question) =>
+          question.options.filter((option) => option.selected)
+        )[0][0].cost;
+      //soustrait le multplier au cost et multiplier le nouveau cost avec userCost
+      cost -= userCost;
+      cost *= userCost;
+    }
+
+    setTotal(cost);
+  };
+
   return (
     <Grid container>
       <Grid item container direction="column" lg>
@@ -601,7 +637,10 @@ export default function Estimate(props) {
           <Button
             variant="contained"
             className={classes.estimateButton}
-            onClick={() => setDialogOpen(true)}
+            onClick={() => {
+              setDialogOpen(true);
+              getTotal();
+            }}
           >
             Get Estimate
           </Button>
@@ -662,7 +701,12 @@ export default function Estimate(props) {
               </Grid>
               <Grid item>
                 <Typography variant="body1" paragraph>
-                  We can create this digital solution for an estimated ...
+                  We can create this digital solution for an estimated
+                  <span className={classes.specialText}>
+                    {" "}
+                    {/* avec toFixed a 2 pour afficher toujours 2 chiffres apres la virgule */}
+                    {total.toFixed(2)}€
+                  </span>
                 </Typography>
                 <Typography variant="body1" paragraph>
                   Fill out your name, phone, and email, place your request, and
