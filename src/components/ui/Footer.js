@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { makeStyles } from "@material-ui/styles";
 import { Grid, Hidden } from "@material-ui/core";
 
-import footerAdornment from "../../assets/Footer Adornment.svg";
+import footerAdornment from "../../assets/footerAdornment.svg";
 import facebook from "../../assets/facebook.svg";
 import twitter from "../../assets/twitter.svg";
 import instagram from "../../assets/instagram.svg";

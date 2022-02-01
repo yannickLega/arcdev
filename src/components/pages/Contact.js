@@ -301,7 +301,7 @@ export default function Contact(props) {
             </Grid>
             <Grid item style={{ width: "20em" }}>
               <TextField
-                placeholder="your message"
+                placeholder=" Tell us more about your project"
                 id="message"
                 value={message}
                 onChange={(event) => setMessage(event.target.value)}

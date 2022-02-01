@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import axios from "axios";
 import { cloneDeep } from "lodash";
 import Lottie from "react-lottie";
 
@@ -14,6 +15,8 @@ import {
   TextField,
   useMediaQuery,
   Hidden,
+  Snackbar,
+  CircularProgress,
 } from "@material-ui/core";
 
 import check from "../../assets/check.svg";
@@ -357,6 +360,16 @@ export default function Estimate(props) {
   const [category, setCategory] = useState("");
   const [users, setUsers] = useState("");
 
+  //spinner state
+  const [loading, setLoading] = useState(false);
+
+  //snackbar state
+  const [alert, setAlert] = useState({
+    open: false,
+    message: "",
+    backgroundColor: "",
+  });
+
   //option de Lottie
   const defaultOptions = {
     loop: true,
@@ -590,6 +603,92 @@ export default function Estimate(props) {
     }
   };
 
+  const getCategory = () => {
+    if (questions.length === 2) {
+      const newCategory = questions
+        .filter(
+          (question) =>
+            question.title === "Which type of website are you wanting?"
+        )[0]
+        .options.filter((option) => option.selected)[0].title;
+      setCategory(newCategory);
+    }
+  };
+
+  const sendEstimate = () => {
+    setLoading(true);
+
+    axios
+      .get("https://us-central1-arcdev-dd519.cloudfunctions.net/sendMail", {
+        params: {
+          name: name,
+          email: email,
+          phone: phone,
+          message: message,
+          total: total,
+          service: service,
+          category: category,
+          platforms: platforms,
+          features: features,
+          customFeatures: customFeatures,
+          users: users,
+        },
+      })
+      .then((res) => {
+        setLoading(false);
+        setAlert({
+          open: true,
+          message: "Estimate placed successfully",
+          backgroundColor: "#4bb543",
+        });
+        setDialogOpen(false);
+      })
+      .catch((err) => {
+        console.error(err);
+        setLoading(false);
+        setAlert({
+          open: true,
+          message: "Oups, something went wrong, please try again ! ",
+          backgroundColor: "#ff3232",
+        });
+      });
+  };
+
+  const estimateDisabled = () => {
+    let disabled = true;
+
+    //si option selectionnée elle est enlevée du array de vide ex
+    const emptySelections = questions
+      .map((question) => question.options.filter((option) => option.selected))
+      .filter((question) => question.length === 0);
+    // si le nombre d'options est = 2 (set de questions website)
+    if (questions.length === 2) {
+      //si emptySelection contient 1 array vide (set de questions website)
+      if (emptySelections.length === 1) {
+        //button actif
+        disabled = false;
+      }
+      //si aucune option n'est selectionnée button disabled (default choix du set de question (app custom app ou website))
+    } else if (questions.length === 1) {
+      //button disabled
+      disabled = true;
+      // sinon le nombre de array vide est inferuieur a 3 et que la derniere option est selected avec au moins un item dans le array(set de questions app et custom app)
+    } else if (
+      emptySelections < 3 &&
+      questions[questions.length - 1].options.filter(
+        (option) => option.selected
+      ).length > 0
+    ) {
+      //button actif
+      disabled = false;
+    }
+
+    //ce console log clarifie le fonctionnement de la fonction ^^
+    console.log(emptySelections);
+
+    return disabled;
+  };
+
   const softwareSelection = (
     <Grid container direction="column">
       <Grid
@@ -687,18 +786,6 @@ export default function Estimate(props) {
     </Grid>
   );
 
-  const getCategory = () => {
-    if (questions.length === 2) {
-      const newCategory = questions
-        .filter(
-          (question) =>
-            question.title === "Which type of website are you wanting?"
-        )[0]
-        .options.filter((option) => option.selected)[0].title;
-      setCategory(newCategory);
-    }
-  };
-
   const websiteSelection = (
     <Grid container direction="column" style={{ marginTop: "14em" }}>
       <Grid item container alignItems="center">
@@ -782,12 +869,12 @@ export default function Estimate(props) {
                 </Typography>
               </Grid>
               <Grid item container>
-                {question.options.map((option) => (
+                {question.options.map((option, index) => (
                   <Grid
                     item
                     container
+                    key={index}
                     direction="column"
-                    key={option.id}
                     component={Button}
                     onClick={() => handleSelect(option.id)}
                     style={{
@@ -861,6 +948,7 @@ export default function Estimate(props) {
         </Grid>
         <Grid item>
           <Button
+            disabled={estimateDisabled()}
             variant="contained"
             className={classes.estimateButton}
             onClick={() => {
@@ -938,7 +1026,7 @@ export default function Estimate(props) {
               </Grid>
               <Grid item style={{ maxWidth: "20em" }}>
                 <TextField
-                  placeholder="your message"
+                  placeholder=" Tell us more about your project"
                   id="message"
                   value={message}
                   onChange={(event) => setMessage(event.target.value)}
@@ -954,6 +1042,7 @@ export default function Estimate(props) {
                   variant="body1"
                   paragraph
                   align={matchesSM ? "center" : undefined}
+                  style={{ lineHeight: 1.25 }}
                 >
                   We can create this digital solution for an estimated
                   <span className={classes.specialText}>
@@ -987,13 +1076,31 @@ export default function Estimate(props) {
                 </Grid>
               </Hidden>
               <Grid item>
-                <Button variant="contained" className={classes.estimateButton}>
-                  Place Request
-                  <img
-                    src={send}
-                    alt="paper airplane"
-                    style={{ marginLeft: "0.5em" }}
-                  />
+                <Button
+                  disabled={
+                    name.length === 0 ||
+                    message.length === 0 ||
+                    emailHelper.length !== 0 ||
+                    email.length === 0 ||
+                    phoneHelper.length !== 0 ||
+                    phone.length === 0
+                  }
+                  variant="contained"
+                  className={classes.estimateButton}
+                  onClick={sendEstimate}
+                >
+                  {loading ? (
+                    <CircularProgress />
+                  ) : (
+                    <>
+                      Place Request
+                      <img
+                        src={send}
+                        alt="paper airplane"
+                        style={{ marginLeft: "0.5em" }}
+                      />
+                    </>
+                  )}
                 </Button>
               </Grid>
               <Hidden mdUp>
@@ -1017,6 +1124,14 @@ export default function Estimate(props) {
           </Grid>
         </DialogContent>
       </Dialog>
+      <Snackbar
+        open={alert.open}
+        message={alert.message}
+        ContentProps={{ style: { backgroundColor: alert.backgroundColor } }}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        onClose={() => setAlert({ ...alert, open: false })}
+        autoHideDuration={4000}
+      />
     </Grid>
   );
 }
